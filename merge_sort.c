@@ -64,7 +64,6 @@ void msort(int *a, int n)
 {
     int *left = a;
     int *right = a + n - 1;
-    int size = right - a;
 
     if (left < right){
         int middle_index = (right - a) / 2;
