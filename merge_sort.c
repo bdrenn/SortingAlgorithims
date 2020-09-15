@@ -6,7 +6,7 @@ void merge(int *a, int left, int middle, int right);
 
 int main () 
 {
-    int a[] = {100, 20, 4, 9, 0, 3, 10, 5};
+    int a[] = {4, 65, 2, -31, 0, 99, 2, 83, 782, 1};
     int n = sizeof(a) / sizeof(a[0]);
 
     printf("original: ");
