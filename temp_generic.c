@@ -2,22 +2,35 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Compares two ints
+int cmpnum(const void* s1, const void* s2);
+// Compares two floats
+int cmpfloat(const void* s1, const void* s2);
+// Compares two people
+int cmpperson(const void* v1, const void* v2);
+
+
 struct Person{
     int age;
     char *name;
 };
 
-int cmpstr(void* v1, void* v2)
-{
-	char *a1 = *(char**)v1;
-	char *a2 = *(char**)v2;
-	return strcmp(a1, a2);
-}
-
-int cmpnum(void* s1, void* s2)
+int cmpnum(const void* s1, const void* s2)
 {
 	int *a = (int*)s1;
 	int *b = (int*)s2;
+	if ((*a) > (*b))
+		return 1;
+	else if ((*a) < (*b))
+		return -1;
+	else
+		return 0;
+}
+
+int cmpfloat(const void* s1, const void* s2)
+{
+	float *a = (float*)s1;
+	float *b = (float*)s2;
 	if ((*a) > (*b))
 		return 1;
 	else if ((*a) < (*b))
@@ -31,56 +44,14 @@ int cmpperson(const void* v1, const void* v2)
     struct Person guy1 = *(struct Person*)v1;
     struct Person guy2 = *(struct Person*)v2;
 
-    char name1[20];
-    char name2[20];
-    strcpy(name1,guy1.name);
-    strcpy(name2,guy2.name);
-
     // Compare age 
     int ans = cmpnum(&guy1.age, &guy2.age);
     if (ans == 0){
         // Compare names 
-        //printf("%s and %s: %d\n", name1, name2, strcmp(name1, name2));
-        return cmpstr(&guy1.name, &guy2.name);
+        return strcmp(guy1.name, guy2.name);
     } else {
         return ans;
     }
-}
-
-void swap(void* v1, void* v2, int size)
-{
-	char buffer[size];
-
-	memcpy(buffer, v1, size);
-	memcpy(v1, v2, size);
-	memcpy(v2, buffer, size);
-}
-
-void _qsort(void* v, int size, int left, int right,
-					int (*comp)(void*, void*))
-{
-	void *vt, *v3;
-	int i, last, mid = (left + right) / 2;
-	if (left >= right)
-		return;
-
-	void* vl = (char*)(v + (left * size));
-	void* vr = (char*)(v + (mid * size));
-	swap(vl, vr, size);
-	last = left;
-	for (i = left + 1; i <= right; i++) {
-
-		vt = (char*)(v + (i * size));
-		if ((*comp)(vl, vt) > 0) {
-			++last;
-			v3 = (char*)(v + (last * size));
-			swap(vt, v3, size);
-		}
-	}
-	v3 = (char*)(v + (last * size));
-	swap(vl, v3, size);
-	_qsort(v, size, left, last - 1, comp);
-	_qsort(v, size, last + 1, right, comp);
 }
 
 int main()
@@ -104,36 +75,26 @@ int main()
     struct Person sixteen = {.name="Juan",.age= 33}; 
     struct Person seventeen = {.name="Natalie",.age= 25}; 
     
-    printf("original strcmp: %d\n", strcmp(one.name, two.name));
     struct Person arr[] = {one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen};
     int size_people = sizeof(int*)/sizeof(int);
 
-    for (int i=0; i <= 16; i++){
-        printf("name, age: %s %d\n",arr[i].name, arr[i].age);
-    }
+    float c[] = {645.32, 37.40, 76.30, 5.40, -34.23, 1.11, -34.94, 23.37, 635.46, -876.22, 467.73, 62.26};
 
+    // Sort
     qsort(arr, 17, sizeof(struct Person), cmpperson);
+    qsort(c, 12, sizeof(float), cmpfloat);
 
-    printf("\n");
+    // Print People
+    printf("People: \n");
     for (int i=0; i <= 16; i++){
-        printf("name, age: %s %d\n",arr[i].name, arr[i].age);
+        printf("%s, %d\n",arr[i].name, arr[i].age);
     }
+    printf("\n");
 
-
-//	char* a[] = {"bbc", "xcd", "ede", "def",
-//			"afg", "hello", "hmmm", "okay", "how" };
-//
-//	int b[] = { 45, 78, 89, 65, 70, 23, 44 };
-//	int* p = b;
-//	_qsort(a, sizeof(char*), 0, 8, (int (*)(void*, void*))(cmpstr));
-//	_qsort(p, sizeof(int), 0, 6, (int (*)(void*, void*))(cmpnum));
-//
-//	for (int i = 0; i < 9; i++)
-//		printf("%s ", a[i]);
-//	printf("\n");
-//
-//	for (int i = 0; i < 7; i++)
-//		printf("%d ", b[i]);
+    // Print floats
+    printf("floats: \n");
+	for (int i = 0; i < 12; i++)
+		printf("%f\n", c[i]);
 	return 0;
 }
 
