@@ -3,11 +3,13 @@
 #include <string.h>
 
 // Compares two ints
-int cmpnum(const void* s1, const void* s2);
+int cmpNum(const void* s1, const void* s2);
 // Compares two floats
-int cmpfloat(const void* s1, const void* s2);
+int cmpFloat(const void* s1, const void* s2);
 // Compares two people
-int cmpperson(const void* v1, const void* v2);
+int cmpPerson(const void* v1, const void* v2);
+// Compares two people by name
+int cmpPersonName(const void* v1, const void* v2);
 // Person Structure
 struct Person;
 
@@ -17,19 +19,19 @@ struct Person{
     char *name;
 };
 
-int cmpnum(const void* s1, const void* s2)
+int cmpNum(const void* s1, const void* s2)
 {
 	int *a = (int*)s1;
 	int *b = (int*)s2;
 	if ((*a) > (*b))
-		return 1;
-	else if ((*a) < (*b))
 		return -1;
+	else if ((*a) < (*b))
+		return 1;
 	else
 		return 0;
 }
 
-int cmpfloat(const void* s1, const void* s2)
+int cmpFloat(const void* s1, const void* s2)
 {
 	float *a = (float*)s1;
 	float *b = (float*)s2;
@@ -41,13 +43,21 @@ int cmpfloat(const void* s1, const void* s2)
 		return 0;
 }
 
-int cmpperson(const void* v1, const void* v2)
+int cmpPersonName(const void* v1, const void* v2)
+{
+    struct Person guy1 = *(struct Person*)v1;
+    struct Person guy2 = *(struct Person*)v2;
+
+    return strcmp(guy1.name, guy2.name);
+}
+
+int cmpPerson(const void* v1, const void* v2)
 {
     struct Person guy1 = *(struct Person*)v1;
     struct Person guy2 = *(struct Person*)v2;
 
     // Compare age 
-    int ans = cmpnum(&guy1.age, &guy2.age);
+    int ans = cmpNum(&guy1.age, &guy2.age);
     if (ans == 0){
         // Compare names 
         return strcmp(guy1.name, guy2.name);
@@ -78,18 +88,31 @@ int main()
     struct Person seventeen = {.name="Natalie",.age= 25}; 
     
     struct Person arr[] = {one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen};
+    struct Person arr2[] = {one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen};
     int size_people = sizeof(int*)/sizeof(int);
 
     float c[] = {645.32, 37.40, 76.30, 5.40, -34.23, 1.11, -34.94, 23.37, 635.46, -876.22, 467.73, 62.26};
 
-    // Sort
-    qsort(arr, 17, sizeof(struct Person), cmpperson);
-    qsort(c, 12, sizeof(float), cmpfloat);
+    // Sort people by name
+    qsort(arr, 17, sizeof(struct Person), cmpPersonName);
 
-    // Print People
-    printf("People: \n");
+    // Sort people by age and name
+    qsort(arr2, 17, sizeof(struct Person), cmpPerson);
+
+    // Sort floats ascending
+    qsort(c, 12, sizeof(float), cmpFloat);
+
+    // Print People by name
+    printf("People sorted by name: \n");
     for (int i=0; i <= 16; i++){
         printf("%s, %d\n",arr[i].name, arr[i].age);
+    }
+    printf("\n");
+
+    // People sorted by age and name
+    printf("People sorted by age and name: \n");
+    for (int i=0; i <= 16; i++){
+        printf("%s, %d\n",arr2[i].name, arr2[i].age);
     }
     printf("\n");
 
