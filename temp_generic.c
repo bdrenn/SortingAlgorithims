@@ -26,19 +26,22 @@ int cmpnum(void* s1, void* s2)
 		return 0;
 }
 
-int cmpperson(void* v1, void* v2)
+int cmpperson(const void* v1, const void* v2)
 {
     struct Person guy1 = *(struct Person*)v1;
     struct Person guy2 = *(struct Person*)v2;
 
-    char* name1 = guy1.name;
-    char* name2 = guy2.name;
+    char name1[20];
+    char name2[20];
+    strcpy(name1,guy1.name);
+    strcpy(name2,guy2.name);
 
     // Compare age 
     int ans = cmpnum(&guy1.age, &guy2.age);
     if (ans == 0){
         // Compare names 
-        return cmpstr(&name1, &name1);
+        //printf("%s and %s: %d\n", name1, name2, strcmp(name1, name2));
+        return cmpstr(&guy1.name, &guy2.name);
     } else {
         return ans;
     }
@@ -96,23 +99,24 @@ int main()
     struct Person eleven = {.name="Danna",.age= 20}; 
     struct Person twelve = {.name="Zara",.age= 23}; 
     struct Person thirteen = {.name="Rosalyn",.age= 26}; 
-    struct Person fourtneen = {.name="Risa",.age= 24}; 
+    struct Person fourteen = {.name="Risa",.age= 24}; 
     struct Person fifteen = {.name="Benny",.age= 28}; 
     struct Person sixteen = {.name="Juan",.age= 33}; 
     struct Person seventeen = {.name="Natalie",.age= 25}; 
-
-    struct Person arr[] = {one, two, three};
+    
+    printf("original strcmp: %d\n", strcmp(one.name, two.name));
+    struct Person arr[] = {one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen};
     int size_people = sizeof(int*)/sizeof(int);
 
-    for (int i=0; i <= 2; i++){
-        printf("str: %s\n",arr[i].name);
+    for (int i=0; i <= 16; i++){
+        printf("name, age: %s %d\n",arr[i].name, arr[i].age);
     }
 
-    qsort(arr, 2, sizeof(Person), cmpperson);
+    qsort(arr, 17, sizeof(struct Person), cmpperson);
 
-
-    for (int i=0; i <= 2; i++){
-        printf("str: %s\n",arr[i].name);
+    printf("\n");
+    for (int i=0; i <= 16; i++){
+        printf("name, age: %s %d\n",arr[i].name, arr[i].age);
     }
 
 
