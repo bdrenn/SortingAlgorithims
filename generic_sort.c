@@ -1,83 +1,102 @@
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
-void qsort2(int *a, int n, int(*compare)(void *x, void *y));
-void printArray(int arr[], int size);
-void swap(int *a, int *b);
-int *partition(int *low, int *high, int(*compare)(void *x, void *y));
-int compare_int(void *x, void *y);
+// Compares two ints
+int cmpnum(const void* s1, const void* s2);
+// Compares two floats
+int cmpfloat(const void* s1, const void* s2);
+// Compares two people
+int cmpperson(const void* v1, const void* v2);
+// Person Structure
+struct Person;
 
 
-int main () 
+struct Person{
+    int age;
+    char *name;
+};
+
+int cmpnum(const void* s1, const void* s2)
 {
-    int a[] = {100, 20, 4, 9, 0, 3, 10, 5};
-    int n = sizeof(a) / sizeof(a[0]);
-
-    printf("Original: ");
-    printArray(a,n);
-    qsort2(a, n, compare_int); 
-    printf("Sorted: ");
-    printArray(a,n);
+	int *a = (int*)s1;
+	int *b = (int*)s2;
+	if ((*a) > (*b))
+		return 1;
+	else if ((*a) < (*b))
+		return -1;
+	else
+		return 0;
 }
 
-int compare_int(void *x, void *y){
-    int *val1 = (int*)x;
-    int *val2 = (int*)y;
-
-    return *val1 <= *val2 ? 1 : -1;
-}
-
-int *partition(int *low, int *high, int(*compare)(void *x, void *y)) 
-{ 
-
-    int *i = low;
-    int *j = high;
-    int pivot = *i;
-
-    printf("compare: %d\n", compare(i, j));
-    printf("i: %d\n", *i);
-    printf("j: %d\n", *j);
-
-    while (i < j){
-        while ((compare(i, &pivot)==1) && i < high){
-            i++;
-        }
-        while((compare(j, &pivot)==-1) && j > low) {
-            j--;
-        }
-        if (i < j){
-            swap(i, j);
-        }
-    }
-    swap(low, j);
-    return j;
-}
-
-void qsort2(int *a, int n, int(*compare)(void *x, void *y)) 
+int cmpfloat(const void* s1, const void* s2)
 {
-    int *low = a;
-    int *high = a + n - 1;
-    int size = high - a;
+	float *a = (float*)s1;
+	float *b = (float*)s2;
+	if ((*a) > (*b))
+		return 1;
+	else if ((*a) < (*b))
+		return -1;
+	else
+		return 0;
+}
 
-    if (low < high){
-        int *j = partition(low, high, compare);
-        qsort2(a, j-a, compare);
-        qsort2(j+1, high-j, compare); 
+int cmpperson(const void* v1, const void* v2)
+{
+    struct Person guy1 = *(struct Person*)v1;
+    struct Person guy2 = *(struct Person*)v2;
+
+    // Compare age 
+    int ans = cmpnum(&guy1.age, &guy2.age);
+    if (ans == 0){
+        // Compare names 
+        return strcmp(guy1.name, guy2.name);
+    } else {
+        return ans;
     }
 }
 
-void printArray(int arr[], int size)
+int main()
 {
-    int i;
-    for (i=0; i < size; i++)
-        printf("%d ", arr[i]);
+    // People
+    struct Person one = {.name="Hal",.age= 20}; 
+    struct Person two = {.name="Susann",.age= 31}; 
+    struct Person three = {.name="Dwight",.age= 19}; 
+    struct Person four = {.name="Kassandra",.age= 21}; 
+    struct Person five = {.name="Lawrence",.age= 25}; 
+    struct Person six = {.name="Cindy",.age= 22}; 
+    struct Person seven = {.name="Corc",.age= 27}; 
+    struct Person eight = {.name="Mac",.age= 19}; 
+    struct Person nine = {.name="Romana",.age= 27}; 
+    struct Person ten = {.name="Doretha",.age= 32}; 
+    struct Person eleven = {.name="Danna",.age= 20}; 
+    struct Person twelve = {.name="Zara",.age= 23}; 
+    struct Person thirteen = {.name="Rosalyn",.age= 26}; 
+    struct Person fourteen = {.name="Risa",.age= 24}; 
+    struct Person fifteen = {.name="Benny",.age= 28}; 
+    struct Person sixteen = {.name="Juan",.age= 33}; 
+    struct Person seventeen = {.name="Natalie",.age= 25}; 
+    
+    struct Person arr[] = {one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen};
+    int size_people = sizeof(int*)/sizeof(int);
+
+    float c[] = {645.32, 37.40, 76.30, 5.40, -34.23, 1.11, -34.94, 23.37, 635.46, -876.22, 467.73, 62.26};
+
+    // Sort
+    qsort(arr, 17, sizeof(struct Person), cmpperson);
+    qsort(c, 12, sizeof(float), cmpfloat);
+
+    // Print People
+    printf("People: \n");
+    for (int i=0; i <= 16; i++){
+        printf("%s, %d\n",arr[i].name, arr[i].age);
+    }
     printf("\n");
-}
 
-void swap(int *a, int *b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
+    // Print floats
+    printf("floats: \n");
+	for (int i = 0; i < 12; i++)
+		printf("%f\n", c[i]);
+	return 0;
 }
 
